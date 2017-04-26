@@ -1,0 +1,7 @@
+Alright Ed, we have another job for you. Spike just helped us seize a computer from a junkie over in Chicago, who had an usual addiction to mushrooms. When we were raiding his apartment, the officers responding were able to get ahold of his computer before he had time to lock it down. They weren't sure if he had any encryption software or not, so they tried to recover as much as they could before they shut it down and brought it back to the lab. 
+
+Unfortunately, Spike and the other person on scene didn't know enough about computers - all they did was run a piece of software to try and "recover" some things automatically, and then shut it off before we could make sure we could get back at the data later. 
+
+It turns out that the junkie has a weird encryption setup, where it only prevents us from looking at his stuff until you can get past the past the login screen. We have access to the information that new technician brought back, and we want to see if you can get the login credentials off of that mess somehow for the username “IEUser”. That computer may have time sensitive information about our next target, so we’re in a hurry. We have other means to break into it, but that’ll take too long. There’s a large bounty in it for you if you can get access before the night’s out. 
+
+Good luck!

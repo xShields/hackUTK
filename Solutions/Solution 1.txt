@@ -1,0 +1,11 @@
+strings -n 5 greatwhite.pcapng | egrep "flag"
+
+----
+
+The file claims to be a pcap, but opening wireshark reveals that it's either not, or it's corrupted somehow. This is just a case of us knowing what we're looking for, and can run a few quick diagnostics on the file to try and find it before we do something excessive. This time it works! Strings is a good command to find all the text, and -n 5 filters it down to words 5 letters or longer. From here we could find it by sifting through what's left, but we're lazy, so we use grep to only give us words with the phrase 'flag' in it, revealing ...
+
+---
+
+=flag{roses_r_blue_violets_r_r3d_mayb3_harambae_is_not_kill}
+
+Good ol CTF answers...

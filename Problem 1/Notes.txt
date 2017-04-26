@@ -1,0 +1,4 @@
+This is a run of the mill Capture the Flag problem. Your goal is to find the "flag", a string of characters that are in the following format: 
+
+flag{this_Isn't_the_Answer..}
+

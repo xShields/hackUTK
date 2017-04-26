@@ -1,0 +1,63 @@
+Step 1: 
+
+
+With Autopsy Linux: 
+
+-Start up autopsy browser
+-Open a new case, following the steps to upload the .img file as a "partition" (none of the other fields really matter)
+-Click "Analyze", then the "File Analysis" tab
+-Here we'll get a clear view of the filesystem, with files that have been deleted highlighted in red.
+-The only file worth looking at is clam.pptx. There's a weird video of a girl dancing that was in there, because CTF developers are weird like that, but it's just a distraction. 
+-Click on the clam file, and the the "Export" button in the middle to download it. 
+
+---
+
+
+With sluethkit (the dev tools used for autopsy):
+
+Two commands, two seconds...
+
+kali> fls clam_victim.img 
+
+r/r 3:	USB         (Volume Label Entry)
+r/r 5:	._.Trashes
+d/d 7:	.Trashes
+d/d 10:	.Spotlight-V100
+d/d 12:	.fseventsd
+r/r * 14:	clam.pptx
+r/r 16:	dance.mp4
+v/v 3270243:	$MBR
+v/v 3270244:	$FAT1
+v/v 3270245:	$FAT2
+d/d 3270246:	$OrphanFiles
+
+kali> icat out.img 14 > clam.pptx
+
+(You pass it a paramter of 14, specifying the offset of the clam file)
+
+-------------
+
+Step 2:
+
+This is the "trick" to this whole problem. It turns out powerpoints are litterally zipped up files, and therefore you can "unzip" them to get all of the individual files out. 
+
+kali> unzip clam.pptx
+
+Since you're looking for a "pearl", you should eventually find the media folder, which holds a bunch of pictures of clams. Looking at the pictures though, one's out of place: image0.gif. There is no such thing as a zero-th image in a powerpoint, and therefore you'll never actually see that picture if you just try to open up the powerpoint with normal means.  
+-------------
+
+Step 3:
+
+Opening the picture reveals a maxi barcode. Originally when I solved this I had to dig up a crazy decoder software to break it apart and decode nearly manually, all because my google-fu wasn't strong enough.
+
+It turns out a google search can lead you to a website that will decode it for you instantly, revealing the flag... 
+
+https://zxing.org/w/decode.jspx
+
+
+
+--------------------
+
+flag{TH1NK ABOUT 1T B1LL. 1F U D13D, WOULD ANY1 CARE??}
+
+

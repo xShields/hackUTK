@@ -1,0 +1,3 @@
+Again, this is a typical CTF problem, with the same goal and format of the flag as the last problem. Goodluck finding the "pearl"!
+
+P.S. This was directly lifted from an old CTF competition, so solutions are out there. We'll go over the solution ourselves, so please don't cheat til later. 

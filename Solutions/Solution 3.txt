@@ -1,0 +1,63 @@
+The hardest part about this problem is figuring out what the hell the file even is. I'm anticipating we'll have to give out a strong hint on this one, but if they pay attention to the "Intel Briefing" they may figure it out. It's something where it'll be pretty easy once you know what tool to use.
+
+The file is... dun dun dun... a ram/memory capture. I used Moonsols' DumpIt.exe, but others exist. The best way to analyze these is a tool called Volatility, which is on Kali. 
+
+You can't easily get plaintext passwords with a ram capture, but you CAN get the password hashes. To do this we need the system and SAM files, which are available in virtual memory.
+
+In a modern system, this wouldn't be as helpful today, but as you can see by the name of the file, they were running a windows XP system. Windows XP uses LM password hashing for passwords under 14 or so characters, which means it's very very crackable. 
+
+
+---
+
+Step 1: 
+
+Get the offsets of the SAM/system files, which has the hashes:
+
+You have to specify which type of OS you're working with for it to run. The filename should give this away, and you can guess that it's service pack 3 (or with trial/error). 
+
+Note: Run "volatility --info" to get a list of profile names.
+
+> volatility --profile=WinXPSP3 -f fileName.raw hivelist
+
+Volatility Foundation Volatility Framework 2.4
+Virtual    Physical   Name
+---------- ---------- ----
+0xe1b84008 0x0c4ba008 \Device\HarddiskVolume1\Documents and Settings\IEUser\Local Settings\Application Data\Microsoft\Windows\UsrClass.dat
+0xe1b78008 0x0c446008 \Device\HarddiskVolume1\Documents and Settings\IEUser\NTUSER.DAT
+0xe185d008 0x0a390008 \Device\HarddiskVolume1\Documents and Settings\LocalService\Local Settings\Application Data\Microsoft\Windows\UsrClass.dat
+0xe18f5008 0x0a5c7008 \Device\HarddiskVolume1\Documents and Settings\LocalService\NTUSER.DAT
+0xe17c2980 0x09467980 \Device\HarddiskVolume1\Documents and Settings\NetworkService\Local Settings\Application Data\Microsoft\Windows\UsrClass.dat
+0xe17124f8 0x08db44f8 \Device\HarddiskVolume1\Documents and Settings\NetworkService\NTUSER.DAT
+0xe1402758 0x07e1f758 \Device\HarddiskVolume1\WINDOWS\system32\config\software
+0xe1509b60 0x07ae1b60 \Device\HarddiskVolume1\WINDOWS\system32\config\default
+0xe14d1b60 0x0796db60 \Device\HarddiskVolume1\WINDOWS\system32\config\SAM
+0xe14dd008 0x07797008 \Device\HarddiskVolume1\WINDOWS\system32\config\SECURITY
+0xe13d6438 0x02ffb438 [no name]
+0xe1036b60 0x02c58b60 \Device\HarddiskVolume1\WINDOWS\system32\config\system
+0xe102e008 0x02c51008 [no name]
+
+
+If you look at the System and SAM sections, you'll notice their offset in virtual memory. We'll use this to extract it.
+
+> volatility --profile=WinXPSP3 -f fileName.raw hashdump -y 0xe1036b60 -s 0xe14d1b60
+
+Administrator:500:b34ce522c3e4c87722c34254e51bff62:fc525c9683e8fe067095ba2ddc971889:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+HelpAssistant:1000:9b45eefa50cbd1f779518231c8ae0fb3:8da1ecee0f0c121facdfb869612a33c6:::
+SUPPORT_388945a0:1002:aad3b435b51404eeaad3b435b51404ee:60a8616c6fd013a1aff2d7c3328b4af8:::
+IEUser:1003:bf142d886af558ed695109ab020e401c:edfb46edc76778278a5320da77ba2ffe:::
+
+This reveals our hashes, specifically the one for IEUser. Let's crack it! The admin password is actually even easier to crack in this case, but we were asked by our "employers" to get IEUser's password specifically. We'll start doing this with john the ripper:
+
+john IE_hash.txt // contains the entire last line of the above output.
+
+The first part of the hash will take a while with john the ripper (like 30min ish). The second half though will be revealed instantly as ' ! '. Since the intel briefing included says we're under a time constraint, it's our job to crack the first part f the hash as quick as possible - google to the rescue!
+
+Copying the first hash into an online LM cracker will reveal the first half of the password instantly. XP hashes are unsalted, so people have databases of saved hashes they've cracked before online!
+
+Together, they reveal the true password: 
+
+---
+
+go_cubs! 
+
